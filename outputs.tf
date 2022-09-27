@@ -1,4 +1,4 @@
 output "mysql_server" {
-  value = azurerm_mysql_server.main
+  value     = azurerm_mysql_server.main
   sensitive = true
 }
