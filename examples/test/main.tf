@@ -20,7 +20,7 @@ module "bookstack_app_service" {
 
   resource_group_name = "rg-terraform-azurerm-bookstack-app-service"
   location            = "eastasia"
-  suffix              = "test"
+  suffix              = "partest"
 }
 
 output "mysql_sever" {
