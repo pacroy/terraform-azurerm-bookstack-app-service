@@ -8,6 +8,13 @@ terraform {
   }
 }
 
+provider "azurerm" {
+  features {}
+}
+
+provider "random" {
+}
+
 module "bookstack_app_service" {
   source = "../.."
 
