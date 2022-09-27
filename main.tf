@@ -1,6 +1,6 @@
 module "naming" {
-  source  = "Azure/naming/azurerm"
-  suffix = [ var.suffix ]
+  source = "Azure/naming/azurerm"
+  suffix = [var.suffix]
 }
 
 resource "random_password" "password" {
