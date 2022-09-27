@@ -9,3 +9,8 @@ module "bookstack_app_service" {
   location            = "southeastasia"
   suffix              = "test"
 }
+
+output "mysql_sever" {
+  value     = module.bookstack_app_service.mysql_server
+  sensitive = true
+}
