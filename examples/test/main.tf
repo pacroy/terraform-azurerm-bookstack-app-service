@@ -1,5 +1,11 @@
 terraform {
-  backend "remote" {}
+  cloud {
+    organization = "pacroy"
+
+    workspaces {
+      name = "terraform-azurerm-bookstack-app-service"
+    }
+  }
 }
 
 module "bookstack_app_service" {
