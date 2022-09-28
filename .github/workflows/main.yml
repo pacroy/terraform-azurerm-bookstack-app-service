@@ -1,0 +1,123 @@
+name: "Test Module"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  ARM_CLIENT_ID: "${{ secrets.ARM_CLIENT_ID }}"
+  ARM_CLIENT_SECRET: "${{ secrets.ARM_CLIENT_SECRET }}"
+  ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+  ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
+
+  TF_IN_AUTOMATION: true
+  TF_INPUT: 0
+
+jobs:
+  apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - uses: actions/checkout@v3
+      name: "Checkout self"
+
+    - name: Configure Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        cli_config_credentials_token: "${{ secrets.TF_TOKEN }}"
+
+    - name: Terraform Format
+      id: terraform-fmt
+      working-directory: '.'
+      run: terraform fmt -check -recursive
+
+    - name: Terraform init
+      id: terraform-init
+      working-directory: './examples/test'
+      run: terraform init
+      
+    - name: Terraform Validate
+      id: terraform-validate
+      working-directory: './examples/test'
+      run: terraform validate
+
+    - name: Terraform Apply
+      id: terraform-apply
+      working-directory: './examples/test'
+      run: |
+        terraform apply -auto-approve -no-color
+
+    - name: Create Job Summary
+      shell: bash
+      if: ${{ success() || failure() }}
+      run: |
+        { cat <<EOF
+        Task | Status
+        --- | ---
+        Terraform Format   | \`${{ steps.terraform-fmt.outcome }}\`
+        Terraform Init     | \`${{ steps.terraform-init.outcome }}\`
+        Terraform Validate | \`${{ steps.terraform-validate.outcome }}\`
+        Terraform Apply    | \`${{ steps.terraform-apply.outcome }}\`
+        Apply Exit Code    | \`${{ steps.terraform-apply.outputs.exitcode }}\`
+        
+        <details>
+        <summary>Terraform Apply Log</summary>
+        
+        \`\`\`console
+        ${{ steps.terraform-apply.outputs.stdout }}
+        \`\`\`
+        
+        </details>
+        EOF
+        } >> "$GITHUB_STEP_SUMMARY"
+
+  destroy:
+    name: Terraform Destroy
+    runs-on: ubuntu-latest
+    needs: apply
+    environment: dev
+    steps:
+    - uses: actions/checkout@v3
+      name: "Checkout self"
+
+    - name: Configure Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        cli_config_credentials_token: "${{ secrets.TF_TOKEN }}"
+
+    - name: Terraform init
+      id: terraform-init
+      working-directory: './examples/test'
+      run: terraform init
+
+    - name: Terraform Destroy
+      id: terraform-destroy
+      working-directory: './examples/test'
+      run: |
+        terraform destroy -auto-approve -no-color
+
+    - name: Create Job Summary
+      shell: bash
+      if: ${{ success() || failure() }}
+      run: |
+        { cat <<EOF
+        Task | Status
+        --- | ---
+        Terraform Init    | \`${{ steps.terraform-init.outcome }}\`
+        Terraform Destroy | \`${{ steps.terraform-destroy.outcome }}\`
+        Destroy Exit Code | \`${{ steps.terraform-destroy.outputs.exitcode }}\`
+        
+        <details>
+        <summary>Terraform Destroy Log</summary>
+        
+        \`\`\`console
+        ${{ steps.terraform-destroy.outputs.stdout }}
+        \`\`\`
+        
+        </details>
+        EOF
+        } >> "$GITHUB_STEP_SUMMARY"
