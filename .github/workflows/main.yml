@@ -52,11 +52,11 @@ jobs:
         { cat <<EOF
         Task | Status
         --- | ---
-        Terraform Format    | \`${{ steps.terraform-fmt.outcome }}\`
-        Terraform Init      | \`${{ steps.terraform-init.outcome }}\`
-        Terraform Validate  | \`${{ steps.terraform-validate.outcome }}\`
-        Terraform Apply     | \`${{ steps.terraform-apply.outcome }}\`
-        Apply Exit Code     | \`${{ steps.terraform-apply.outputs.exitcode }}\`
+        Terraform Format   | \`${{ steps.terraform-fmt.outcome }}\`
+        Terraform Init     | \`${{ steps.terraform-init.outcome }}\`
+        Terraform Validate | \`${{ steps.terraform-validate.outcome }}\`
+        Terraform Apply    | \`${{ steps.terraform-apply.outcome }}\`
+        Apply Exit Code    | \`${{ steps.terraform-apply.outputs.exitcode }}\`
         
         <details>
         <summary>Terraform Apply Log</summary>
@@ -100,14 +100,12 @@ jobs:
         { cat <<EOF
         Task | Status
         --- | ---
-        Terraform Format    | \`${{ steps.terraform-fmt.outcome }}\`
-        Terraform Init      | \`${{ steps.terraform-init.outcome }}\`
-        Terraform Validate  | \`${{ steps.terraform-validate.outcome }}\`
-        Terraform Destroy   | \`${{ steps.terraform-destroy.outcome }}\`
-        Destroy Exit Code   | \`${{ steps.terraform-destroy.outputs.exitcode }}\`
+        Terraform Init    | \`${{ steps.terraform-init.outcome }}\`
+        Terraform Destroy | \`${{ steps.terraform-destroy.outcome }}\`
+        Destroy Exit Code | \`${{ steps.terraform-destroy.outputs.exitcode }}\`
         
         <details>
-        <summary>Terraform destroy Log</summary>
+        <summary>Terraform Destroy Log</summary>
         
         \`\`\`console
         ${{ steps.terraform-destroy.outputs.stdout }}
