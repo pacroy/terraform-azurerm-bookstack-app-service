@@ -26,22 +26,22 @@ jobs:
 
     - name: Terraform Format
       id: terraform-fmt
-      working-directory: ''
+      working-directory: '.'
       run: terraform fmt -check -recursive
 
     - name: Terraform init
       id: terraform-init
-      working-directory: 'test'
+      working-directory: './examples/test'
       run: terraform init
       
     - name: Terraform Validate
       id: terraform-validate
-      working-directory: 'test'
+      working-directory: './examples/test'
       run: terraform validate
 
     - name: Terraform Apply
       id: terraform-apply
-      working-directory: 'test'
+      working-directory: './examples/test'
       run: |
         terraform apply -auto-approve -no-color
 
@@ -84,12 +84,12 @@ jobs:
 
     - name: Terraform init
       id: terraform-init
-      working-directory: 'test'
+      working-directory: './examples/test'
       run: terraform init
 
     - name: Terraform Destroy
       id: terraform-destroy
-      working-directory: 'test'
+      working-directory: './examples/test'
       run: |
         terraform destroy -auto-approve -no-color
 
