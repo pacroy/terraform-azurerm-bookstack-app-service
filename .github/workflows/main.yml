@@ -16,7 +16,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       name: "Checkout self"
 
     - name: Configure Terraform
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: apply
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       name: "Checkout self"
 
     - name: Configure Terraform
