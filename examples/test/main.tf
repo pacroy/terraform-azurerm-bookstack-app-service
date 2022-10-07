@@ -1,11 +1,5 @@
 terraform {
-  cloud {
-    organization = "pacroy"
-
-    workspaces {
-      name = "terraform-azurerm-bookstack-app-service"
-    }
-  }
+  cloud {}
 }
 
 provider "azurerm" {
