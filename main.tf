@@ -31,3 +31,28 @@ resource "azurerm_mysql_server" "main" {
   ssl_enforcement_enabled           = true
   ssl_minimal_tls_version_enforced  = "TLS1_2"
 }
+
+resource "azurerm_service_plan" "main" {
+  name                = module.naming.app_service_plan.name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  os_type             = "Linux"
+  sku_name            = "P1v2"
+}
+
+resource "azurerm_linux_web_app" "main" {
+  name                = module.naming.app_service.name
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  service_plan_id     = azurerm_service_plan.main.id
+
+  site_config {
+    always_on           = true
+    minimum_tls_version = "1.2"
+    local_mysql_enabled = true
+    application_stack {
+      docker_image     = "linuxserver/bookstack"
+      docker_image_tag = "22.09.1"
+    }
+  }
+}
