@@ -55,6 +55,7 @@ resource "azurerm_linux_web_app" "main" {
   site_config {
     always_on           = true
     minimum_tls_version = "1.2"
+    ftps_state          = "Disabled"
     local_mysql_enabled = true
     application_stack {
       docker_image     = "lscr.io/linuxserver/bookstack"
