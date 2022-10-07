@@ -1,9 +1,14 @@
 terraform {
-  cloud {
-    organization = "pacroy"
-
-    workspaces {
-      name = "terraform-azurerm-bookstack-app-service"
+  cloud {}
+  required_version = "~> 1.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.24"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.4"
     }
   }
 }
@@ -25,5 +30,14 @@ module "bookstack_app_service" {
 
 output "mysql_sever" {
   value     = module.bookstack_app_service.mysql_server
+  sensitive = true
+}
+
+output "service_plan" {
+  value = module.bookstack_app_service.service_plan
+}
+
+output "linux_web_app" {
+  value     = module.bookstack_app_service.linux_web_app
   sensitive = true
 }
