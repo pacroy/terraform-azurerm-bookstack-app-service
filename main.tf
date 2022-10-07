@@ -57,7 +57,7 @@ resource "azurerm_linux_web_app" "main" {
     minimum_tls_version = "1.2"
     local_mysql_enabled = true
     application_stack {
-      docker_image     = "linuxserver/bookstack"
+      docker_image     = "lscr.io/linuxserver/bookstack"
       docker_image_tag = "22.09.1"
     }
   }
