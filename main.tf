@@ -30,6 +30,8 @@ resource "azurerm_mysql_server" "main" {
   public_network_access_enabled     = true
   ssl_enforcement_enabled           = true
   ssl_minimal_tls_version_enforced  = "TLS1_2"
+
+  tags = {}
 }
 
 resource "azurerm_service_plan" "main" {
@@ -38,6 +40,7 @@ resource "azurerm_service_plan" "main" {
   location            = var.location
   os_type             = "Linux"
   sku_name            = "P1v2"
+  tags                = {}
 }
 
 resource "azurerm_linux_web_app" "main" {
@@ -46,6 +49,8 @@ resource "azurerm_linux_web_app" "main" {
   location            = var.location
   service_plan_id     = azurerm_service_plan.main.id
   https_only          = true
+  app_settings        = {}
+  tags                = {}
 
   site_config {
     always_on           = true
