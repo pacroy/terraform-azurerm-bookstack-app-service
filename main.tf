@@ -75,8 +75,8 @@ resource "azurerm_linux_web_app" "main" {
   https_only          = true
   app_settings = {
     APP_URL     = "http://${module.naming.app_service.name}.azurewebsites.net"
-    DB_HOST     = "${azurerm_mysql_server.main.fqdn}:3306"
-    DB_USER     = "${azurerm_mysql_server.main.administrator_login}@${module.naming.app_service.name}"
+    DB_HOST     = "${azurerm_mysql_server.main.fqdn}"
+    DB_USER     = "${azurerm_mysql_server.main.administrator_login}@${azurerm_mysql_server.main.fqdn}"
     DB_PASS     = azurerm_mysql_server.main.administrator_login_password
     DB_DATABASE = azurerm_mysql_database.main.name
   }
