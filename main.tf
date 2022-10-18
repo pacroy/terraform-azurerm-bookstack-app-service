@@ -49,8 +49,14 @@ resource "azurerm_linux_web_app" "main" {
   location            = var.location
   service_plan_id     = azurerm_service_plan.main.id
   https_only          = true
-  app_settings        = {}
-  tags                = {}
+  app_settings = {
+    APP_URL     = "${self.name}.azurewebsites.net"
+    DB_HOST     = "${azurerm_mysql_server.main.fqdn}:3306"
+    DB_USER     = azurerm_mysql_server.main.administrator_login
+    DB_PASS     = azurerm_mysql_server.main.administrator_login_password
+    DB_DATABASE = "bookstackapp"
+  }
+  tags = {}
 
   site_config {
     always_on           = true
