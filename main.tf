@@ -38,6 +38,14 @@ resource "azurerm_mysql_server" "main" {
   tags = {}
 }
 
+resource "azurerm_mysql_firewall_rule" "example" {
+  name                = "office"
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_mysql_server.main.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
 resource "azurerm_mysql_database" "main" {
   name                = local.database
   resource_group_name = var.resource_group_name
