@@ -5,6 +5,10 @@ module "naming" {
   suffix = [var.suffix]
 }
 
+locals {
+  database = "bookstackapp"
+}
+
 resource "random_password" "password" {
   length           = 24
   special          = true
@@ -34,6 +38,14 @@ resource "azurerm_mysql_server" "main" {
   tags = {}
 }
 
+resource "azurerm_mysql_database" "main" {
+  name                = local.database
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_mysql_server.main.name
+  charset             = "utf8"
+  collation           = "utf8_unicode_ci"
+}
+
 resource "azurerm_service_plan" "main" {
   name                = module.naming.app_service_plan.name
   resource_group_name = var.resource_group_name
@@ -54,7 +66,7 @@ resource "azurerm_linux_web_app" "main" {
     DB_HOST     = "${azurerm_mysql_server.main.fqdn}:3306"
     DB_USER     = azurerm_mysql_server.main.administrator_login
     DB_PASS     = azurerm_mysql_server.main.administrator_login_password
-    DB_DATABASE = "bookstackapp"
+    DB_DATABASE = local.database
   }
   tags = {}
 
