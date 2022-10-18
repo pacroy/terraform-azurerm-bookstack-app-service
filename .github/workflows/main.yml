@@ -82,6 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: apply
     environment: dev
+    if: ${{ always() }}
     steps:
     - uses: actions/checkout@v3
       name: "Checkout self"
