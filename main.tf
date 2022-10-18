@@ -64,10 +64,6 @@ resource "azurerm_service_plan" "main" {
 }
 
 resource "azurerm_linux_web_app" "main" {
-  depends_on = [
-    azurerm_mysql_firewall_rule.azure_services
-  ]
-
   name                = module.naming.app_service.name
   resource_group_name = var.resource_group_name
   location            = var.location
