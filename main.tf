@@ -38,7 +38,7 @@ resource "azurerm_mysql_server" "main" {
   tags = {}
 }
 
-resource "azurerm_mysql_firewall_rule" "example" {
+resource "azurerm_mysql_firewall_rule" "azure_services" {
   name                = "office"
   resource_group_name = var.resource_group_name
   server_name         = azurerm_mysql_server.main.name
@@ -64,6 +64,10 @@ resource "azurerm_service_plan" "main" {
 }
 
 resource "azurerm_linux_web_app" "main" {
+  depends_on = [
+    azurerm_mysql_firewall_rule.azure_services
+  ]
+
   name                = module.naming.app_service.name
   resource_group_name = var.resource_group_name
   location            = var.location
@@ -74,7 +78,7 @@ resource "azurerm_linux_web_app" "main" {
     DB_HOST     = "${azurerm_mysql_server.main.fqdn}:3306"
     DB_USER     = azurerm_mysql_server.main.administrator_login
     DB_PASS     = azurerm_mysql_server.main.administrator_login_password
-    DB_DATABASE = local.database
+    DB_DATABASE = azurerm_mysql_database.main.name
   }
   tags = {}
 
