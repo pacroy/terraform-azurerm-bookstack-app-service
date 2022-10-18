@@ -11,3 +11,7 @@ output "linux_web_app" {
   value     = azurerm_linux_web_app.main
   sensitive = true
 }
+
+output "mysql_database" {
+  value = azurerm_mysql_database.main
+}
