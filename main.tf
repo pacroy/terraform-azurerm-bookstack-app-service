@@ -38,14 +38,6 @@ resource "azurerm_mysql_server" "main" {
   tags = {}
 }
 
-resource "azurerm_mysql_firewall_rule" "azure_services" {
-  name                = "office"
-  resource_group_name = var.resource_group_name
-  server_name         = azurerm_mysql_server.main.name
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
-}
-
 resource "azurerm_mysql_database" "main" {
   name                = local.database
   resource_group_name = var.resource_group_name
@@ -64,10 +56,6 @@ resource "azurerm_service_plan" "main" {
 }
 
 resource "azurerm_linux_web_app" "main" {
-  depends_on = [
-    azurerm_mysql_firewall_rule.azure_services
-  ]
-
   name                = module.naming.app_service.name
   resource_group_name = var.resource_group_name
   location            = var.location
