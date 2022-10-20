@@ -28,7 +28,7 @@ module "bookstack_app_service" {
   suffix              = "partest"
 }
 
-output "mysql_sever" {
+output "mysql_server" {
   value     = module.bookstack_app_service.mysql_server
   sensitive = true
 }
