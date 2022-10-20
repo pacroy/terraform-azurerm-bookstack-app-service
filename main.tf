@@ -8,7 +8,7 @@ module "naming" {
 resource "random_password" "password" {
   length           = 24
   special          = true
-  override_special = "!#$%&*()-_=+[]<>:?"
+  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
 resource "azurerm_mysql_server" "main" {
