@@ -83,7 +83,7 @@ resource "azurerm_linux_web_app" "main" {
 
 resource "azurerm_mysql_firewall_rule" "azure_services" {
   for_each = { 
-    for ip in azurerm_linux_web_app.main.outbound_ip_address_list :
+    for idx, ip in azurerm_linux_web_app.main.outbound_ip_address_list :
       "rule_${idx}" => ip
   }
 
