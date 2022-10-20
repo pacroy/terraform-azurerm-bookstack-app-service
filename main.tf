@@ -80,3 +80,16 @@ resource "azurerm_linux_web_app" "main" {
     }
   }
 }
+
+resource "azurerm_mysql_firewall_rule" "azure_services" {
+  for_each = { 
+    for ip in azurerm_linux_web_app.main.outbound_ip_address_list :
+      "rule_${idx}" => ip
+  }
+
+  name                = each.key
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_mysql_server.main.name
+  start_ip_address    = each.value
+  end_ip_address      = each.value
+}
