@@ -28,10 +28,18 @@ resource "azurerm_mysql_server" "main" {
   geo_redundant_backup_enabled      = false
   infrastructure_encryption_enabled = false
   public_network_access_enabled     = true
-  ssl_enforcement_enabled           = true
-  ssl_minimal_tls_version_enforced  = "TLS1_2"
+  ssl_enforcement_enabled           = false
+  ssl_minimal_tls_version_enforced  = "TLSEnforcementDisabled"
 
   tags = {}
+}
+
+resource "azurerm_mysql_database" "main" {
+  name                = "bookstackapp"
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_mysql_server.main.name
+  charset             = "utf8"
+  collation           = "utf8_unicode_ci"
 }
 
 resource "azurerm_service_plan" "main" {
@@ -49,17 +57,35 @@ resource "azurerm_linux_web_app" "main" {
   location            = var.location
   service_plan_id     = azurerm_service_plan.main.id
   https_only          = true
-  app_settings        = {}
-  tags                = {}
+  app_settings = {
+    APP_URL     = "https://${module.naming.app_service.name}.azurewebsites.net"
+    DB_HOST     = azurerm_mysql_server.main.fqdn
+    DB_USER     = azurerm_mysql_server.main.administrator_login
+    DB_PASS     = azurerm_mysql_server.main.administrator_login_password
+    DB_DATABASE = azurerm_mysql_database.main.name
+  }
+  tags = {}
 
   site_config {
     always_on           = true
     minimum_tls_version = "1.2"
     ftps_state          = "Disabled"
-    local_mysql_enabled = true
     application_stack {
       docker_image     = "lscr.io/linuxserver/bookstack"
       docker_image_tag = "22.09.1"
     }
   }
+}
+
+resource "azurerm_mysql_firewall_rule" "azure_services" {
+  for_each = { 
+    for idx, ip in azurerm_linux_web_app.main.outbound_ip_address_list :
+      "app_service_outbound_ip_${idx + 1}" => ip
+  }
+
+  name                = each.key
+  resource_group_name = var.resource_group_name
+  server_name         = azurerm_mysql_server.main.name
+  start_ip_address    = each.value
+  end_ip_address      = each.value
 }
