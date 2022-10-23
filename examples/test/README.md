@@ -12,4 +12,6 @@ export TF_WORKSPACE="<Your Terraform Cloud workspace>"
 terraform init
 terraform apply -target module.bookstack_app_service.azurerm_linux_web_app.main
 terraform apply
+terraform taint module.bookstack_app_service.random_id.restart
+terraform apply
 ```
