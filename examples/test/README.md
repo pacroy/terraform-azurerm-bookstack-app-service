@@ -15,3 +15,9 @@ terraform apply
 terraform taint module.bookstack_app_service.random_id.restart
 terraform apply
 ```
+
+Access application from a web browser. You can get your application's URL using this command:
+
+```sh
+echo "https://$(tf output -json linux_web_app | jq -r '.default_hostname')"
+```
