@@ -11,6 +11,10 @@ resource "random_password" "password" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
+resource "random_id" "restart" {
+  byte_length = 8
+}
+
 resource "azurerm_mysql_server" "main" {
   name                = module.naming.mysql_server.name
   location            = var.location
@@ -63,6 +67,7 @@ resource "azurerm_linux_web_app" "main" {
     DB_USER     = azurerm_mysql_server.main.administrator_login
     DB_PASS     = azurerm_mysql_server.main.administrator_login_password
     DB_DATABASE = azurerm_mysql_database.main.name
+    RANDOM_ID   = random_id.restart.hex
   }
   tags = {}
 
@@ -78,9 +83,9 @@ resource "azurerm_linux_web_app" "main" {
 }
 
 resource "azurerm_mysql_firewall_rule" "azure_services" {
-  for_each = { 
+  for_each = {
     for idx, ip in azurerm_linux_web_app.main.outbound_ip_address_list :
-      "app_service_outbound_ip_${idx + 1}" => ip
+    "app_service_outbound_ip_${idx + 1}" => ip
   }
 
   name                = each.key
