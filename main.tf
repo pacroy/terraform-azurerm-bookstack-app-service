@@ -103,6 +103,10 @@ resource "azurerm_linux_web_app" "main" {
       docker_image_tag = "22.09.1"
     }
   }
+
+  identity {
+    type = "SystemAssigned"
+  }
 }
 
 resource "azurerm_mysql_firewall_rule" "azure_services" {
