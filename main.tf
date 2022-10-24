@@ -88,7 +88,7 @@ resource "azurerm_linux_web_app" "main" {
     DB_PASS      = azurerm_mysql_server.main.administrator_login_password
     DB_DATABASE  = azurerm_mysql_database.main.name
     RANDOM_ID    = random_id.restart.hex
-    STORAGE_TYPE = local_secure
+    STORAGE_TYPE = "local_secure"
   }
   tags = {}
 
