@@ -103,6 +103,24 @@ resource "azurerm_linux_web_app" "main" {
       docker_image_tag = "22.09.1"
     }
   }
+
+  storage_account {
+    access_key   = azurerm_storage_account.main.primary_access_key
+    account_name = azurerm_storage_account.main.name
+    mount_path   = "/var/www/bookstack/public"
+    name         = azurerm_storage_share.public.name
+    share_name   = azurerm_storage_share.public.name
+    type         = "AzureFiles"
+  }
+
+  storage_account {
+    access_key   = azurerm_storage_account.main.primary_access_key
+    account_name = azurerm_storage_account.main.name
+    mount_path   = "/var/www/bookstack/storage"
+    name         = azurerm_storage_share.storage.name
+    share_name   = azurerm_storage_share.storage.name
+    type         = "AzureFiles"
+  }
 }
 
 resource "azurerm_mysql_firewall_rule" "azure_services" {
