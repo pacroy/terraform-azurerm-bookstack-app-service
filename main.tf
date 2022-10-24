@@ -54,14 +54,14 @@ resource "azurerm_storage_account" "main" {
   account_replication_type = "LRS"
 }
 
-resource "azurerm_storage_share" "public_uploads" {
-  name                 = "public_uploads"
+resource "azurerm_storage_share" "public" {
+  name                 = "public"
   storage_account_name = azurerm_storage_account.main.name
   quota                = 10
 }
 
-resource "azurerm_storage_share" "storage_uploads" {
-  name                 = "storage_uploads"
+resource "azurerm_storage_share" "storage" {
+  name                 = "storage"
   storage_account_name = azurerm_storage_account.main.name
   quota                = 10
 }
