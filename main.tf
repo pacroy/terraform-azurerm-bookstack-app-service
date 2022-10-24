@@ -46,6 +46,26 @@ resource "azurerm_mysql_database" "main" {
   collation           = "utf8_unicode_ci"
 }
 
+resource "azurerm_storage_account" "main" {
+  name                     = module.naming.storage_account.name
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_share" "public_uploads" {
+  name                 = "public_uploads"
+  storage_account_name = azurerm_storage_account.main.name
+  quota                = 10
+}
+
+resource "azurerm_storage_share" "storage_uploads" {
+  name                 = "storage_uploads"
+  storage_account_name = azurerm_storage_account.main.name
+  quota                = 10
+}
+
 resource "azurerm_service_plan" "main" {
   name                = module.naming.app_service_plan.name
   resource_group_name = var.resource_group_name
