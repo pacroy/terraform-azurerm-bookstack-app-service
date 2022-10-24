@@ -15,3 +15,8 @@ output "linux_web_app" {
 output "mysql_database" {
   value = azurerm_mysql_database.main
 }
+
+output "storage_account" {
+  value     = azurerm_storage_account.main
+  sensitive = true
+}

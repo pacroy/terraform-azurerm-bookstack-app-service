@@ -45,3 +45,8 @@ output "linux_web_app" {
 output "mysql_database" {
   value = module.bookstack_app_service.mysql_database
 }
+
+output "storage_account" {
+  value     = module.bookstack_app_service.storage_account
+  sensitive = true
+}

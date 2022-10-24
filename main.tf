@@ -46,6 +46,28 @@ resource "azurerm_mysql_database" "main" {
   collation           = "utf8_unicode_ci"
 }
 
+resource "azurerm_storage_account" "main" {
+  name                            = module.naming.storage_account.name
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  shared_access_key_enabled       = true
+  allow_nested_items_to_be_public = false
+}
+
+resource "azurerm_storage_share" "public" {
+  name                 = "public"
+  storage_account_name = azurerm_storage_account.main.name
+  quota                = 10
+}
+
+resource "azurerm_storage_share" "storage" {
+  name                 = "storage"
+  storage_account_name = azurerm_storage_account.main.name
+  quota                = 10
+}
+
 resource "azurerm_service_plan" "main" {
   name                = module.naming.app_service_plan.name
   resource_group_name = var.resource_group_name
@@ -62,12 +84,13 @@ resource "azurerm_linux_web_app" "main" {
   service_plan_id     = azurerm_service_plan.main.id
   https_only          = true
   app_settings = {
-    APP_URL     = "https://${module.naming.app_service.name}.azurewebsites.net"
-    DB_HOST     = azurerm_mysql_server.main.fqdn
-    DB_USER     = azurerm_mysql_server.main.administrator_login
-    DB_PASS     = azurerm_mysql_server.main.administrator_login_password
-    DB_DATABASE = azurerm_mysql_database.main.name
-    RANDOM_ID   = random_id.restart.hex
+    APP_URL      = "https://${module.naming.app_service.name}.azurewebsites.net"
+    DB_HOST      = azurerm_mysql_server.main.fqdn
+    DB_USER      = azurerm_mysql_server.main.administrator_login
+    DB_PASS      = azurerm_mysql_server.main.administrator_login_password
+    DB_DATABASE  = azurerm_mysql_database.main.name
+    RANDOM_ID    = random_id.restart.hex
+    STORAGE_TYPE = "local_secure"
   }
   tags = {}
 
@@ -79,6 +102,24 @@ resource "azurerm_linux_web_app" "main" {
       docker_image     = "lscr.io/linuxserver/bookstack"
       docker_image_tag = "22.09.1"
     }
+  }
+
+  storage_account {
+    access_key   = azurerm_storage_account.main.primary_access_key
+    account_name = azurerm_storage_account.main.name
+    mount_path   = "/var/www/bookstack/public"
+    name         = azurerm_storage_share.public.name
+    share_name   = azurerm_storage_share.public.name
+    type         = "AzureFiles"
+  }
+
+  storage_account {
+    access_key   = azurerm_storage_account.main.primary_access_key
+    account_name = azurerm_storage_account.main.name
+    mount_path   = "/var/www/bookstack/storage"
+    name         = azurerm_storage_share.storage.name
+    share_name   = azurerm_storage_share.storage.name
+    type         = "AzureFiles"
   }
 }
 
