@@ -52,7 +52,7 @@ resource "azurerm_storage_account" "main" {
   location                        = var.location
   account_tier                    = "Standard"
   account_replication_type        = "LRS"
-  shared_access_key_enabled       = false
+  shared_access_key_enabled       = true
   allow_nested_items_to_be_public = false
 }
 
@@ -102,10 +102,6 @@ resource "azurerm_linux_web_app" "main" {
       docker_image     = "lscr.io/linuxserver/bookstack"
       docker_image_tag = "22.09.1"
     }
-  }
-
-  identity {
-    type = "SystemAssigned"
   }
 }
 
