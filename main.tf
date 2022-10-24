@@ -47,11 +47,13 @@ resource "azurerm_mysql_database" "main" {
 }
 
 resource "azurerm_storage_account" "main" {
-  name                     = module.naming.storage_account.name
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
+  name                            = module.naming.storage_account.name
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  account_tier                    = "Standard"
+  account_replication_type        = "LRS"
+  shared_access_key_enabled       = false
+  allow_nested_items_to_be_public = false
 }
 
 resource "azurerm_storage_share" "public" {
