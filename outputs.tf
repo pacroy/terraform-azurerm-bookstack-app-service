@@ -17,6 +17,6 @@ output "mysql_database" {
 }
 
 output "storage_account" {
-  value     = "azurerm_storage_account.main"
+  value     = azurerm_storage_account.main
   sensitive = true
 }
